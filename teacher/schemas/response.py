@@ -12,9 +12,7 @@ class ResponseUser(ModelSchema):
             'name',
             'first_name',
             'second_name',
-            'email',
-            'updated_at',
-            'created_at',
+            'email'
         ]
 
 
