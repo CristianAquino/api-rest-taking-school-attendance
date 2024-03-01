@@ -3,17 +3,21 @@ from ninja import Router
 from ninja.errors import HttpError
 
 from core.encrypt import get_jwt_token
+from course.models import Course
 from .bearer import AuthBearer
 from .models import User
 from .schemas.payload import PayloadUpdateMyAccount, PayloadPostAddUser, PayloadPostLoginUser
-from .schemas.response import ResponseToken, ResponseUser
+from .schemas.response import ResponseMe, ResponseToken, ResponseUser
 from .constants import Endpoints
 
 router = Router()
 
 
-@router.post(Endpoints.POST_LOGIN, auth=None, response=ResponseToken)
-def login(request, data: PayloadPostLoginUser):
+@router.post(
+    Endpoints.POST_LOGIN,
+    response=ResponseToken
+)
+def login_user(request, data: PayloadPostLoginUser):
     """
     Returns the access token if correct credentials
     """
@@ -27,7 +31,6 @@ def login(request, data: PayloadPostLoginUser):
 
 @router.post(
     Endpoints.POST_ADD_USER,
-    auth=None,
     response={201: ResponseUser},
 )
 def register_user(request, data: PayloadPostAddUser):
@@ -49,19 +52,21 @@ def register_user(request, data: PayloadPostAddUser):
 @router.get(
     Endpoints.GET_ME,
     auth=AuthBearer(),
-    response=ResponseUser,
+    response=ResponseMe,
 )
 def get_my_account(request):
     """
     Get my user profile.
     """
-    return request.user
+    id = request.user.id
+    courses = Course.objects.filter(teacher_id=id)
+    return {'user': request.user, 'course': courses}
 
 
 @router.put(
     Endpoints.PATCH_MY_ACCOUNT,
     auth=AuthBearer(),
-    response=ResponseUser,
+    response={201: ResponseUser},
 )
 def put_my_account(request, data: PayloadUpdateMyAccount):
     """
