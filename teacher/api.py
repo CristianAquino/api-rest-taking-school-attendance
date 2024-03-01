@@ -63,7 +63,7 @@ def get_my_account(request):
     auth=AuthBearer(),
     response=ResponseUser,
 )
-def patch_my_account(request, data: PayloadUpdateMyAccount):
+def put_my_account(request, data: PayloadUpdateMyAccount):
     """
     Edit my user account.
     """
