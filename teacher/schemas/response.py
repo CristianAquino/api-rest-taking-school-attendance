@@ -1,5 +1,7 @@
+from typing import List
 from ninja import ModelSchema
 from pydantic import BaseModel
+from course.schemas.response import ResponseGetCourse
 
 from teacher.models import User
 
@@ -18,3 +20,8 @@ class ResponseUser(ModelSchema):
 
 class ResponseToken(BaseModel):
     token: str
+
+
+class ResponseMe(BaseModel):
+    user: ResponseUser
+    course: List[ResponseGetCourse]
