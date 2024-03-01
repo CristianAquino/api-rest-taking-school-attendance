@@ -1,14 +1,14 @@
-from typing import List
-
 from django.shortcuts import get_object_or_404
 from ninja import Query, Router
 
 from core.filters import FilterPagination
 from core.utils import get_paginated_queryset
-from course.constants import Endpoints
-from course.models import Course
-from course.schemas.payload import PayloadPostAddCourse, PayloadUpdateCourse
-from course.schemas.response import ResponseGetCourse, ResponseGetCourseList
+from .constants import Endpoints
+from .models import Course
+from .schemas.payload import PayloadPostAddCourse, PayloadUpdateCourse
+from .schemas.response import (ResponseGetCourseList,
+                               ResponseGetMeCourse)
+from student.models import Student
 from teacher.bearer import AuthBearer
 
 router = Router()
@@ -17,10 +17,15 @@ router = Router()
 @router.get(
     Endpoints.GET_COURSE,
     auth=AuthBearer(),
-    response=ResponseGetCourse,
+    response=ResponseGetMeCourse,
 )
 def get_course(request, id):
-    return get_object_or_404(Course, id=id)
+    """
+    Get my course and students.
+    """
+    course = Course.objects.get(id=id)
+    students = Student.objects.filter(course_id=id)
+    return {'course': course, "student": students}
 
 
 @router.get(
@@ -29,6 +34,9 @@ def get_course(request, id):
     response=ResponseGetCourseList,
 )
 def get_course_list(request, data: FilterPagination = Query(...)):
+    """
+    List of courses.
+    """
     queryset = Course.objects.all()
     count = queryset.count()
     queryset = get_paginated_queryset(queryset, data.limit, data.offset)
@@ -40,14 +48,13 @@ def get_course_list(request, data: FilterPagination = Query(...)):
     auth=AuthBearer(),
     response={201: str},
 )
-def add_course(request, data: List[PayloadPostAddCourse]):
+def add_course(request, data: PayloadPostAddCourse):
     """
-    Create a new politician.
+    Create a new course.
     """
-    for payload in data:
-        course_data = payload.dict()
-        course_data['teacher_id'] = request.user.id
-        Course.objects.create(**course_data)
+    course_data = data.dict()
+    course_data['teacher_id'] = request.user.id
+    Course.objects.create(**course_data)
 
     return "created all course"
 
@@ -73,9 +80,13 @@ def put_my_course(request, data: PayloadUpdateCourse, id):
 
 @router.delete(
     Endpoints.DELETE_COURSE,
-    response=str,
+    auth=AuthBearer(),
+    response={204: str},
 )
 def delete_course(request, id):
+    """
+    Delete course.
+    """
     post = get_object_or_404(Course, id=id)
     post.delete()
     return f'Course #{id} was deleted'
