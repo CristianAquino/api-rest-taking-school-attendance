@@ -22,9 +22,12 @@ def get_course(request, id):
     student = get_object_or_404(Student, id=id)
     return student
 # mostrar:
+# curso
 # info
 # notas
 # promedio de asistencia
+# cada estudiante tiene un id unico
+# en base al curso al cual pertenece
 
 
 @router.post(
