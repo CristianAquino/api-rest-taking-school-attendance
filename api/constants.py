@@ -2,10 +2,7 @@ class Routers:
     TEACHER = 'teacher/'
     STUDENT = 'student/'
     COURSE = 'course/'
-    LEVEL = 'level/'
-    SECTION = 'section/'
-    NOTE = 'note/'
-    DEGRE = 'degree/'
+    CALIFICATION = 'calification/'
     ATTENDANCE = 'attendance/'
 
 
