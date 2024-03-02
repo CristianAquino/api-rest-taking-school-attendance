@@ -18,10 +18,10 @@ class ResponseGetCourse(ModelSchema):
 
 
 class ResponseGetCourseList(BaseModel):
-    course_list: List[ResponseGetCourse]
+    courses: List[ResponseGetCourse]
     count: int
 
 
 class ResponseGetMeCourse(BaseModel):
     course: ResponseGetCourse
-    student: List[ResponseGetStudent]
+    students: List[ResponseGetStudent]
