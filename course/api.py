@@ -25,7 +25,7 @@ def get_course(request, id):
     """
     course = Course.objects.get(id=id)
     students = Student.objects.filter(course_id=id)
-    return {'course': course, "student": students}
+    return {'course': course, "students": students}
 
 
 @router.get(
@@ -37,10 +37,10 @@ def get_course_list(request, data: FilterPagination = Query(...)):
     """
     List of courses.
     """
-    queryset = Course.objects.all()
+    queryset = Course.objects.filter(teacher_id=request.user.id)
     count = queryset.count()
     queryset = get_paginated_queryset(queryset, data.limit, data.offset)
-    return {'course_list': list(queryset), 'count': count}
+    return {'courses': list(queryset), 'count': count}
 
 
 @router.post(
@@ -56,7 +56,7 @@ def add_course(request, data: PayloadPostAddCourse):
     course_data['teacher_id'] = request.user.id
     Course.objects.create(**course_data)
 
-    return "created all course"
+    return f"created {data.name} course"
 
 
 @router.put(
@@ -81,7 +81,7 @@ def put_my_course(request, data: PayloadUpdateCourse, id):
 @router.delete(
     Endpoints.DELETE_COURSE,
     auth=AuthBearer(),
-    response={204: str},
+    response={202: str},
 )
 def delete_course(request, id):
     """
