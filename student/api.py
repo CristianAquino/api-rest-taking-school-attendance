@@ -2,6 +2,8 @@ from typing import List
 
 from django.shortcuts import get_object_or_404
 from ninja import Router
+from calification.models import Calification
+from core.utils import get_letter_calification
 
 from teacher.bearer import AuthBearer
 
@@ -18,8 +20,19 @@ router = Router()
     auth=AuthBearer(),
     response=ResponseGetStudent,
 )
-def get_course(request, id):
-    student = get_object_or_404(Student, id=id)
+def get_student(request, id):
+    sum = 0
+    student = Student.objects.get(id=id)
+    # falta condicion de existencia de calificaciones
+    califications = Calification.objects.filter(student_id=id)
+    for calification in califications:
+        sum += calification.calification
+    prom = sum/len(califications)
+    if student.average != prom:
+        student.average = prom
+        student.califications = get_letter_calification(prom)
+        student.save()
+        return student
     return student
 # mostrar:
 # curso
