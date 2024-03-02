@@ -12,3 +12,13 @@ def get_paginated_queryset(queryset, limit, offset):
     if limit and not offset:
         return queryset[:limit]
     return queryset
+
+
+def get_letter_calification(calification):
+    if calification >= 18:
+        return 'AD'
+    if calification >= 14:
+        return 'A'
+    if calification >= 11:
+        return 'B'
+    return 'C'
