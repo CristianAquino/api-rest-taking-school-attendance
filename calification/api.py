@@ -1,27 +1,16 @@
 from typing import List
-from django.shortcuts import get_object_or_404
+
 from ninja import Router
-from .models import Calification
-from .schemas.payload import PayloadPostAddCalification
-from .models import Student
-from .schemas.response import ResponseGetCalification, ResponseGetListCalifications
 
 from teacher.bearer import AuthBearer
 
 from .constants import Endpoints
-
+from .models import Calification, Student
+from .schemas.payload import (PayloadPostAddCalification,
+                              PayloadUpdateStudentCalification)
+from .schemas.response import ResponseGetListCalifications
 
 router = Router()
-
-
-@router.get(
-    Endpoints.GET_CALIFICATION,
-    auth=AuthBearer(),
-    response=ResponseGetCalification,
-)
-def get_course(request, id):
-    calification = get_object_or_404(Calification, id=id)
-    return calification
 
 
 @router.get(
@@ -64,3 +53,22 @@ def add_calification(
             cdata['student_id'] = id
             Calification.objects.create(**cdata)
     return "all califications were added"
+
+
+@router.put(
+    Endpoints.PUT_CALIFICATION,
+    auth=AuthBearer(),
+    response={201: str},
+)
+def put_my_calification(
+    request,
+    data: List[PayloadUpdateStudentCalification]
+):
+    """
+    Edit my student calification.
+    """
+    for payload in data:
+        calification = Calification.objects.get(id=payload.id)
+        calification.calification = payload.calification
+        calification.save()
+    return "updated all califications"
