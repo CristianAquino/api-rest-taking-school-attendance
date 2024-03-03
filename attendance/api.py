@@ -20,9 +20,9 @@ router = Router()
     auth=AuthBearer(),
     response=ResponseGetAttendance,
 )
-def get_my_account(request, id):
+def get_my_attendance(request, id):
     """
-    Get my user profile.
+    Get my attendance.
     """
     return get_object_or_404(Attendance, id=id)
 
@@ -59,10 +59,9 @@ def add_attendance(
     for payload in data:
         cdata = {}
         cdata['student_id'] = payload.id
-        for key, value in payload.attendance.items():
-            cdata[key] = value
-            Attendance.objects.create(**cdata)
-    return "all califications were added"
+        cdata['att'] = payload.att
+        Attendance.objects.create(**cdata)
+    return "all attendances were added"
 
 
 @router.put(
@@ -70,7 +69,7 @@ def add_attendance(
     auth=AuthBearer(),
     response={201: str},
 )
-def put_my_calification(
+def put_my_attendance(
     request,
     data: PayloadUpdateStudentAttendance,
     id
@@ -81,4 +80,4 @@ def put_my_calification(
     attendance = get_object_or_404(Attendance, id=id)
     attendance.justification = data.justification
     attendance.save()
-    return "updated all attendance"
+    return "updated attendance"
