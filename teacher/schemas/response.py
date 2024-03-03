@@ -25,3 +25,7 @@ class ResponseToken(BaseModel):
 class ResponseMe(BaseModel):
     user: ResponseUser
     course: List[ResponseGetCourse]
+
+
+class ResponseMessage(BaseModel):
+    message: str
