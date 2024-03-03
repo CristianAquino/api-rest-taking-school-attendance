@@ -41,7 +41,7 @@ def register_user(request, data: PayloadPostAddUser):
         include={
             'name',
             'first_name',
-            'last_name',
+            'second_name',
             'email',
             'password',
         }
