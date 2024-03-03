@@ -10,12 +10,10 @@ class ResponseGetAttendance(ModelSchema):
         model = Attendance
         model_fields = [
             'id',
-            'attendend',
-            'missed',
-            'late',
+            'att'
         ]
 
 
 class ResponseGetListAttendance(BaseModel):
     id: UUID
-    attendance: List[ResponseGetAttendance]
+    attendances: List[ResponseGetAttendance]

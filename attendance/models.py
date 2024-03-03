@@ -9,9 +9,7 @@ from student.models import Student
 
 class Attendance(TimeStampedModel):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    attendend = models.BooleanField(default=False)
-    missed = models.BooleanField(default=False)
-    late = models.BooleanField(default=False)
+    att = models.IntegerField(default=0)  # 0,1,2
     justification = models.TextField(max_length=240, blank=True)
 
     # foreingkeys
