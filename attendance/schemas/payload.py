@@ -4,7 +4,7 @@ from ninja import Schema
 
 class PayloadPostAddAttendance(Schema):
     id: UUID
-    attendance: object
+    att: int
 
 
 class PayloadUpdateStudentAttendance(Schema):
