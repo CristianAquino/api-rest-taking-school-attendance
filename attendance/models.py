@@ -12,6 +12,7 @@ class Attendance(TimeStampedModel):
     attendend = models.BooleanField(default=False)
     missed = models.BooleanField(default=False)
     late = models.BooleanField(default=False)
+    justification = models.TextField(max_length=240, blank=True)
 
     # foreingkeys
     student = models.ForeignKey(
