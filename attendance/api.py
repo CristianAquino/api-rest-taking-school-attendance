@@ -1,16 +1,18 @@
 from typing import List
+
 from django.shortcuts import get_object_or_404
 from ninja import Router
+from ninja.errors import HttpError
 
-from .models import Attendance
-from .schemas.payload import PayloadPostAddAttendance, PayloadUpdateStudentAttendance
-from .schemas.response import ResponseGetAttendance, ResponseGetListAttendance
 from student.models import Student
-
 from teacher.bearer import AuthBearer
+from teacher.schemas.response import ResponseMessage
 
 from .constants import Endpoints
-
+from .models import Attendance
+from .schemas.payload import (PayloadPostAddAttendance,
+                              PayloadUpdateStudentAttendance)
+from .schemas.response import ResponseGetAttendance, ResponseGetListAttendance
 
 router = Router()
 
@@ -47,7 +49,7 @@ def get_all_attendance_course(request, course_id):
 @router.post(
     Endpoints.POST_ADD_ATTENDANCE,
     auth=AuthBearer(),
-    response={201: str},
+    response={201: ResponseMessage},
 )
 def add_attendance(
         request,
@@ -56,18 +58,21 @@ def add_attendance(
     """
     Create a new attendance.
     """
-    for payload in data:
-        cdata = {}
-        cdata['student_id'] = payload.id
-        cdata['att'] = payload.att
-        Attendance.objects.create(**cdata)
-    return "all attendances were added"
+    try:
+        for payload in data:
+            cdata = {}
+            cdata['student_id'] = payload.id
+            cdata['att'] = payload.att
+            Attendance.objects.create(**cdata)
+        return dict(message="all attendances were added")
+    except:
+        raise HttpError(403, "Cannot register attendance")
 
 
 @router.put(
     Endpoints.PUT_ATTENDANCE,
     auth=AuthBearer(),
-    response={201: str},
+    response={201: ResponseMessage},
 )
 def put_my_attendance(
     request,
@@ -77,7 +82,11 @@ def put_my_attendance(
     """
     Edit my student attendance.
     """
-    attendance = get_object_or_404(Attendance, id=id)
-    attendance.justification = data.justification
-    attendance.save()
-    return "updated attendance"
+    try:
+        attendance = Attendance.objects.get(id=id)
+        if attendance:
+            attendance.justification = data.justification
+            attendance.save()
+            return dict(message="updated attendance")
+    except:
+        raise HttpError(403, "Attendance not found")

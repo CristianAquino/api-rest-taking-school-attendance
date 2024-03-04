@@ -1,8 +1,10 @@
 from typing import List
 
 from ninja import Router
+from ninja.errors import HttpError
 
 from teacher.bearer import AuthBearer
+from teacher.schemas.response import ResponseMessage
 
 from .constants import Endpoints
 from .models import Calification, Student
@@ -36,7 +38,7 @@ def get_all_calification_course(request, course_id):
 @router.post(
     Endpoints.POST_ADD_CALIFICATION,
     auth=AuthBearer(),
-    response={201: str},
+    response={201: ResponseMessage},
 )
 def add_calification(
         request,
@@ -45,20 +47,23 @@ def add_calification(
     """
     Create a new calification.
     """
-    for payload in data:
-        id, califications = payload.id, payload.califications
-        for calification in califications:
-            cdata = {}
-            cdata['calification'] = calification
-            cdata['student_id'] = id
-            Calification.objects.create(**cdata)
-    return "all califications were added"
+    try:
+        for payload in data:
+            id, califications = payload.id, payload.califications
+            for calification in califications:
+                cdata = {}
+                cdata['calification'] = calification
+                cdata['student_id'] = id
+                Calification.objects.create(**cdata)
+        return dict(message="All califications were added")
+    except:
+        raise HttpError(403, "Cannot register calification")
 
 
 @router.put(
     Endpoints.PUT_CALIFICATION,
     auth=AuthBearer(),
-    response={201: str},
+    response={201: ResponseMessage},
 )
 def put_my_calification(
     request,
@@ -67,8 +72,12 @@ def put_my_calification(
     """
     Edit my student calification.
     """
-    for payload in data:
-        calification = Calification.objects.get(id=payload.id)
-        calification.calification = payload.calification
-        calification.save()
-    return "updated all califications"
+    try:
+        for payload in data:
+            calification = Calification.objects.get(id=payload.id)
+            if calification:
+                calification.calification = payload.calification
+                calification.save()
+        return dict(message="Updated all califications")
+    except:
+        raise HttpError(403, "Calification not found")
