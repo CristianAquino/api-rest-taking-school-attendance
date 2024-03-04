@@ -1,6 +1,5 @@
 from typing import List
 
-from django.shortcuts import get_object_or_404
 from ninja import Router
 from ninja.errors import HttpError
 
@@ -12,21 +11,9 @@ from .constants import Endpoints
 from .models import Attendance
 from .schemas.payload import (PayloadPostAddAttendance,
                               PayloadUpdateStudentAttendance)
-from .schemas.response import ResponseGetAttendance, ResponseGetListAttendance
+from .schemas.response import ResponseGetListAttendance
 
 router = Router()
-
-
-@router.get(
-    Endpoints.GET_ATTENDANCE,
-    auth=AuthBearer(),
-    response=ResponseGetAttendance,
-)
-def get_my_attendance(request, id):
-    """
-    Get my attendance.
-    """
-    return get_object_or_404(Attendance, id=id)
 
 
 @router.get(

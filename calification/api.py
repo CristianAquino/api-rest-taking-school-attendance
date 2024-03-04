@@ -76,8 +76,11 @@ def put_my_calification(
         for payload in data:
             calification = Calification.objects.get(id=payload.id)
             if calification:
-                calification.calification = payload.calification
-                calification.save()
+                if calification.calification != payload.calification:
+                    calification.calification = payload.calification
+                    calification.save()
+                else:
+                    pass
         return dict(message="Updated all califications")
     except:
         raise HttpError(403, "Calification not found")

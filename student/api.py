@@ -22,19 +22,23 @@ router = Router()
     response=ResponseGetStudent,
 )
 def get_student(request, id):
-    sum = 0
-    student = Student.objects.get(id=id)
-    # falta condicion de existencia de calificaciones
-    califications = Calification.objects.filter(student_id=id)
-    for calification in califications:
-        sum += calification.calification
-    prom = sum/len(califications)
-    if student.average != prom:
-        student.average = prom
-        student.califications = get_letter_calification(prom)
-        student.save()
-        return student
-    return student
+    try:
+        sum = 0
+        student = Student.objects.get(id=id)
+        if student:
+            califications = Calification.objects.filter(student_id=id)
+            if len(califications) != 0:
+                for calification in califications:
+                    sum += calification.calification
+                prom = sum/len(califications)
+                if student.average != prom:
+                    student.average = prom
+                    student.califications = get_letter_calification(prom)
+                    student.save()
+                    return student
+            return student
+    except:
+        raise HttpError(403, "Student not found")
 # mostrar:
 # curso
 # info
