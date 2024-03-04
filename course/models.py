@@ -12,7 +12,7 @@ class Course(TimeStampedModel):
     name = models.CharField(max_length=80)
     level = models.CharField(max_length=80)
     degree = models.CharField(max_length=1)
-    section = models.CharField(max_length=80)
+    section = models.CharField(max_length=1)
 
     # foreingkeys
     teacher = models.ForeignKey(
