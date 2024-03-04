@@ -1,8 +1,10 @@
+from ninja.errors import HttpError
 from django.shortcuts import get_object_or_404
 from ninja import Query, Router
 
 from core.filters import FilterPagination
 from core.utils import get_paginated_queryset
+from teacher.schemas.response import ResponseMessage
 from .constants import Endpoints
 from .models import Course
 from .schemas.payload import PayloadPostAddCourse, PayloadUpdateCourse
@@ -23,9 +25,13 @@ def get_course(request, id):
     """
     Get my course and students.
     """
-    course = Course.objects.get(id=id)
-    students = Student.objects.filter(course_id=id)
-    return {'course': course, "students": students}
+    try:
+        course = Course.objects.get(id=id)
+        if course:
+            students = Student.objects.filter(course_id=id)
+            return {'course': course, "students": students}
+    except:
+        raise HttpError(403, "Course not found")
 
 
 @router.get(
@@ -46,47 +52,57 @@ def get_course_list(request, data: FilterPagination = Query(...)):
 @router.post(
     Endpoints.POST_ADD_COURSE,
     auth=AuthBearer(),
-    response={201: str},
+    response={201: ResponseMessage},
 )
 def add_course(request, data: PayloadPostAddCourse):
     """
     Create a new course.
     """
-    course_data = data.dict()
-    course_data['teacher_id'] = request.user.id
-    Course.objects.create(**course_data)
-
-    return f"created {data.name} course"
+    try:
+        course_data = data.dict()
+        course_data['teacher_id'] = request.user.id
+        Course.objects.create(**course_data)
+        return dict(message=f"Created {data.name} course")
+    except:
+        raise HttpError(403, "Cannot register course")
 
 
 @router.put(
     Endpoints.PUT_COURSE,
     auth=AuthBearer(),
-    response={201: str},
+    response={201: ResponseMessage},
 )
 def put_my_course(request, data: PayloadUpdateCourse, id):
     """
     Edit my course.
     """
-    course = get_object_or_404(Course, id=id)
-    course_data = data.dict(exclude_unset=True)
+    try:
+        course = Course.objects.get(id=id)
+        if course:
+            course_data = data.dict(exclude_unset=True)
 
-    for key, value in course_data.items():
-        setattr(course, key, value)
+            for key, value in course_data.items():
+                setattr(course, key, value)
 
-    course.save()
-    return f'Course {course.name} was updated'
+            course.save()
+            return dict(message=f'Course {course.name} was updated')
+    except:
+        raise HttpError(403, "Course not found")
 
 
 @router.delete(
     Endpoints.DELETE_COURSE,
     auth=AuthBearer(),
-    response={202: str},
+    response={202: ResponseMessage},
 )
 def delete_course(request, id):
     """
     Delete course.
     """
-    post = get_object_or_404(Course, id=id)
-    post.delete()
-    return f'Course #{id} was deleted'
+    try:
+        course = Course.objects.get(id=id)
+        if course:
+            course.delete()
+            return dict(message=f'Course {course.name} was deleted')
+    except:
+        raise HttpError(403, "Course not found")
