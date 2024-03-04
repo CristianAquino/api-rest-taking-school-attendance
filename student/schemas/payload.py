@@ -1,13 +1,41 @@
+from typing_extensions import Annotated
 from ninja import Schema
+from pydantic import StringConstraints
 
 
-class PayloadPostAddStudent(Schema):
-    name: str
-    first_name: str
-    second_name: str
+class PayloadBaseDataUser(Schema):
+    name: Annotated[
+        str,
+        StringConstraints(
+            strip_whitespace=True,
+            min_length=3,
+            max_length=240,
+            pattern=r'^[a-zA-Z\s]+$'
+        )
+    ] = 'lorem'
+    first_name: Annotated[
+        str,
+        StringConstraints(
+            strip_whitespace=True,
+            min_length=3,
+            max_length=80,
+            pattern=r'^[a-zA-Z\s]+$'
+        )
+    ] = 'ipsum'
+    second_name: Annotated[
+        str,
+        StringConstraints(
+            strip_whitespace=True,
+            min_length=3,
+            max_length=80,
+            pattern=r'^[a-zA-Z\s]+$'
+        )
+    ] = 'dolor'
 
 
-class PayloadUpdateStudent(Schema):
-    name: str
-    first_name: str
-    second_name: str
+class PayloadPostAddStudent(PayloadBaseDataUser):
+    pass
+
+
+class PayloadUpdateStudent(PayloadBaseDataUser):
+    pass
