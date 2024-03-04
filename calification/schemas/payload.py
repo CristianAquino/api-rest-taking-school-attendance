@@ -11,5 +11,6 @@ class PayloadPostAddCalification(Schema):
     califications: List[Annotated[float, Field(strict=True, gt=-1, lt=21)]]
 
 
-class PayloadUpdateStudentCalification(PayloadPostAddCalification):
-    pass
+class PayloadUpdateStudentCalification(Schema):
+    id: UUID
+    calification: Annotated[float, Field(strict=True, gt=-1, lt=21)]
