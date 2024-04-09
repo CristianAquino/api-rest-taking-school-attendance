@@ -17,6 +17,8 @@ class User(AbstractBaseUser, TimeStampedModel):
     name = models.CharField(max_length=240)
     first_name = models.CharField(max_length=80)
     second_name = models.CharField(max_length=80)
+    thumbnail = models.TextField(
+        default="https://i.postimg.cc/V6zbW55L/blank-profile-picture.png", null=False)
     objects = CustomUserManager()
 
     def __str__(self):

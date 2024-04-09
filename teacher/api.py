@@ -68,7 +68,7 @@ def get_my_account(request):
     """
     id = request.user.id
     courses = Course.objects.filter(teacher_id=id)
-    return {'user': request.user, 'course': courses}
+    return {'user': request.user, 'courses': courses}
 
 
 @router.put(
