@@ -19,4 +19,4 @@ class ResponseGetCalification(ModelSchema):
 
 class ResponseGetListCalifications(BaseModel):
     id: UUID
-    califications: List[ResponseGetCalification]
+    califications: ResponseGetCalification

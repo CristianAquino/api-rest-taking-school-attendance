@@ -13,5 +13,7 @@ class PayloadPostAddCalification(Schema):
     pe: Annotated[float, Field(strict=True, gt=-1, lt=21)] = 0
 
 
-class PayloadUpdateStudentCalification(PayloadPostAddCalification):
-    pass
+class PayloadUpdateStudentCalification(Schema):
+    pt: Annotated[float, Field(strict=True, gt=-1, lt=21)] = 0
+    pp: Annotated[float, Field(strict=True, gt=-1, lt=21)] = 0
+    pe: Annotated[float, Field(strict=True, gt=-1, lt=21)] = 0

@@ -21,13 +21,22 @@ router = Router()
     response=List[ResponseGetListCalifications]
 )
 def get_all_calification_course(request, course_id):
+    """
+    Get all califications of a course.
+    """
     students = Student.objects.filter(course_id=course_id)
     data = []
     for student in students:
         cdata = {}
-        califications = Calification.objects.filter(student_id=student.id)
+        ccalf = {}
+        califications = Calification.objects.get(student_id=student.id)
+        print(califications.__dict__)
         cdata['id'] = student.id
-        cdata['califications'] = califications
+        ccalf['id'] = califications.id
+        ccalf['pp'] = califications.pp
+        ccalf['pt'] = califications.pt
+        ccalf['pe'] = califications.pe
+        cdata['califications'] = ccalf
         data.append(cdata)
     return data
 
@@ -64,16 +73,18 @@ def add_calification(
 )
 def put_my_calification(
     request,
-    data: PayloadUpdateStudentCalification
+    data: PayloadUpdateStudentCalification,
+    id
 ):
     """
     Edit my student calification.
     """
     try:
-        calification = Calification.objects.get(id=data.id)
-        calification.pp = data.pp
-        calification.pt = data.pt
-        calification.pe = data.pe
+        calification = Calification.objects.get(id=id)
+        if calification:
+            patch_data = data.dict(exclude_unset=True)
+            for key, value in patch_data.items():
+                setattr(calification, key, value)
         calification.save()
         return dict(message="Updated all califications")
     except:
