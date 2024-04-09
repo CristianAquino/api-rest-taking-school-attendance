@@ -74,7 +74,7 @@ def get_my_account(request):
 @router.put(
     Endpoints.PATCH_MY_ACCOUNT,
     auth=AuthBearer(),
-    response={201: ResponseUser},
+    response={201: ResponseMessage},
 )
 def put_my_account(request, data: PayloadUpdateMyAccount):
     """
@@ -88,6 +88,6 @@ def put_my_account(request, data: PayloadUpdateMyAccount):
             setattr(user, key, value)
 
         user.save()
-        return user
+        return dict(message="Updated teacher account")
     except:
         raise HttpError(403, "Cannot updated account")
