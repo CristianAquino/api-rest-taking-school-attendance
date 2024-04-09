@@ -1,17 +1,17 @@
-from ninja.errors import HttpError
 from django.shortcuts import get_object_or_404
 from ninja import Query, Router
+from ninja.errors import HttpError
 
 from core.filters import FilterPagination
 from core.utils import get_paginated_queryset
+from student.models import Student
+from teacher.bearer import AuthBearer
 from teacher.schemas.response import ResponseMessage
+
 from .constants import Endpoints
 from .models import Course
 from .schemas.payload import PayloadPostAddCourse, PayloadUpdateCourse
-from .schemas.response import (ResponseGetCourseList,
-                               ResponseGetMeCourse)
-from student.models import Student
-from teacher.bearer import AuthBearer
+from .schemas.response import ResponseGetCourseList, ResponseGetMeCourse
 
 router = Router()
 
