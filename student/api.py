@@ -26,11 +26,10 @@ def get_student(request, id):
         sum = 0
         student = Student.objects.get(id=id)
         if student:
-            califications = Calification.objects.filter(student_id=id)
-            if len(califications) != 0:
-                for calification in califications:
-                    sum += calification.calification
-                prom = sum/len(califications)
+            califications = Calification.objects.get(student_id=id)
+            if califications:
+                sum = califications.pe+califications.pt+califications.pp
+                prom = sum/3
                 if student.average != prom:
                     student.average = prom
                     student.califications = get_letter_calification(prom)
