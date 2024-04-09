@@ -11,7 +11,9 @@ class ResponseGetCalification(ModelSchema):
         model = Calification
         model_fields = [
             'id',
-            'calification'
+            'pt',
+            'pp',
+            'pe'
         ]
 
 

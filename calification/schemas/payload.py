@@ -8,9 +8,10 @@ from typing_extensions import Annotated
 
 class PayloadPostAddCalification(Schema):
     id: UUID
-    califications: List[Annotated[float, Field(strict=True, gt=-1, lt=21)]]
+    pt: Annotated[float, Field(strict=True, gt=-1, lt=21)] = 0
+    pp: Annotated[float, Field(strict=True, gt=-1, lt=21)] = 0
+    pe: Annotated[float, Field(strict=True, gt=-1, lt=21)] = 0
 
 
-class PayloadUpdateStudentCalification(Schema):
-    id: UUID
-    calification: Annotated[float, Field(strict=True, gt=-1, lt=21)]
+class PayloadUpdateStudentCalification(PayloadPostAddCalification):
+    pass

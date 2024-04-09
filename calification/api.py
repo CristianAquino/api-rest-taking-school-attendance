@@ -25,10 +25,7 @@ def get_all_calification_course(request, course_id):
     data = []
     for student in students:
         cdata = {}
-        # cal = []
         califications = Calification.objects.filter(student_id=student.id)
-        # for calification in califications:
-        #     cal.append(calification.calification)
         cdata['id'] = student.id
         cdata['califications'] = califications
         data.append(cdata)
@@ -49,12 +46,12 @@ def add_calification(
     """
     try:
         for payload in data:
-            id, califications = payload.id, payload.califications
-            for calification in califications:
-                cdata = {}
-                cdata['calification'] = calification
-                cdata['student_id'] = id
-                Calification.objects.create(**cdata)
+            cdata = {}
+            cdata["pp"] = payload.pp
+            cdata["pe"] = payload.pe
+            cdata["pt"] = payload.pt
+            cdata['student_id'] = payload.id
+            Calification.objects.create(**cdata)
         return dict(message="All califications were added")
     except:
         raise HttpError(403, "Cannot register calification")
@@ -67,20 +64,17 @@ def add_calification(
 )
 def put_my_calification(
     request,
-    data: List[PayloadUpdateStudentCalification]
+    data: PayloadUpdateStudentCalification
 ):
     """
     Edit my student calification.
     """
     try:
-        for payload in data:
-            calification = Calification.objects.get(id=payload.id)
-            if calification:
-                if calification.calification != payload.calification:
-                    calification.calification = payload.calification
-                    calification.save()
-                else:
-                    pass
+        calification = Calification.objects.get(id=data.id)
+        calification.pp = data.pp
+        calification.pt = data.pt
+        calification.pe = data.pe
+        calification.save()
         return dict(message="Updated all califications")
     except:
         raise HttpError(403, "Calification not found")
