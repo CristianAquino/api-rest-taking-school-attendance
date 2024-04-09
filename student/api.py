@@ -22,6 +22,9 @@ router = Router()
     response=ResponseGetStudent,
 )
 def get_student(request, id):
+    """
+    Get a student by id.
+    """
     try:
         sum = 0
         student = Student.objects.get(id=id)
@@ -54,7 +57,7 @@ def get_student(request, id):
 )
 def add_student(request, data: List[PayloadPostAddStudent], course_id):
     """
-    Create a new politician.
+    Add students to a course.
     """
     try:
         for payload in data:
