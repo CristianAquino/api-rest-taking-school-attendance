@@ -1,4 +1,3 @@
-from django.shortcuts import get_object_or_404
 from ninja import Query, Router
 from ninja.errors import HttpError
 
@@ -11,7 +10,8 @@ from teacher.schemas.response import ResponseMessage
 from .constants import Endpoints
 from .models import Course
 from .schemas.payload import PayloadPostAddCourse, PayloadUpdateCourse
-from .schemas.response import ResponseGetCourseList, ResponseGetMeCourse
+from .schemas.response import (ResponseGetCourse, ResponseGetCourseList,
+                               ResponseGetMeCourse)
 
 router = Router()
 
@@ -52,7 +52,7 @@ def get_course_list(request, data: FilterPagination = Query(...)):
 @router.post(
     Endpoints.POST_ADD_COURSE,
     auth=AuthBearer(),
-    response={201: ResponseMessage},
+    response=ResponseGetCourse,
 )
 def add_course(request, data: PayloadPostAddCourse):
     """
@@ -61,8 +61,7 @@ def add_course(request, data: PayloadPostAddCourse):
     try:
         course_data = data.dict()
         course_data['teacher_id'] = request.user.id
-        Course.objects.create(**course_data)
-        return dict(message=f"Created {data.name} course")
+        return Course.objects.create(**course_data)
     except:
         raise HttpError(403, "Cannot register course")
 
