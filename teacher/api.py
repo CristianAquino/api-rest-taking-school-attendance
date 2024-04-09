@@ -9,8 +9,7 @@ from .constants import Endpoints
 from .models import User
 from .schemas.payload import (PayloadPostAddUser, PayloadPostLoginUser,
                               PayloadUpdateMyAccount)
-from .schemas.response import (ResponseMe, ResponseMessage, ResponseToken,
-                               ResponseUser)
+from .schemas.response import ResponseMe, ResponseMessage, ResponseToken
 
 router = Router()
 
