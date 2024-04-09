@@ -9,7 +9,9 @@ from student.models import Student
 
 class Calification(TimeStampedModel):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    calification = models.FloatField(default=0)
+    pt = models.FloatField(default=0)
+    pp = models.FloatField(default=0)
+    pe = models.FloatField(default=0)
 
     # foreingkeys
     student = models.ForeignKey(

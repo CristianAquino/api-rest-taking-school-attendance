@@ -21,16 +21,22 @@ router = Router()
     response=List[ResponseGetListCalifications]
 )
 def get_all_calification_course(request, course_id):
+    """
+    Get all califications of a course.
+    """
     students = Student.objects.filter(course_id=course_id)
     data = []
     for student in students:
         cdata = {}
-        # cal = []
-        califications = Calification.objects.filter(student_id=student.id)
-        # for calification in califications:
-        #     cal.append(calification.calification)
+        ccalf = {}
+        califications = Calification.objects.get(student_id=student.id)
+        print(califications.__dict__)
         cdata['id'] = student.id
-        cdata['califications'] = califications
+        ccalf['id'] = califications.id
+        ccalf['pp'] = califications.pp
+        ccalf['pt'] = califications.pt
+        ccalf['pe'] = califications.pe
+        cdata['califications'] = ccalf
         data.append(cdata)
     return data
 
@@ -49,12 +55,12 @@ def add_calification(
     """
     try:
         for payload in data:
-            id, califications = payload.id, payload.califications
-            for calification in califications:
-                cdata = {}
-                cdata['calification'] = calification
-                cdata['student_id'] = id
-                Calification.objects.create(**cdata)
+            cdata = {}
+            cdata["pp"] = payload.pp
+            cdata["pe"] = payload.pe
+            cdata["pt"] = payload.pt
+            cdata['student_id'] = payload.id
+            Calification.objects.create(**cdata)
         return dict(message="All califications were added")
     except:
         raise HttpError(403, "Cannot register calification")
@@ -67,20 +73,19 @@ def add_calification(
 )
 def put_my_calification(
     request,
-    data: List[PayloadUpdateStudentCalification]
+    data: PayloadUpdateStudentCalification,
+    id
 ):
     """
     Edit my student calification.
     """
     try:
-        for payload in data:
-            calification = Calification.objects.get(id=payload.id)
-            if calification:
-                if calification.calification != payload.calification:
-                    calification.calification = payload.calification
-                    calification.save()
-                else:
-                    pass
+        calification = Calification.objects.get(id=id)
+        if calification:
+            patch_data = data.dict(exclude_unset=True)
+            for key, value in patch_data.items():
+                setattr(calification, key, value)
+        calification.save()
         return dict(message="Updated all califications")
     except:
         raise HttpError(403, "Calification not found")

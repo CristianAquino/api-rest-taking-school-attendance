@@ -11,10 +11,12 @@ class ResponseGetCalification(ModelSchema):
         model = Calification
         model_fields = [
             'id',
-            'calification'
+            'pt',
+            'pp',
+            'pe'
         ]
 
 
 class ResponseGetListCalifications(BaseModel):
     id: UUID
-    califications: List[ResponseGetCalification]
+    califications: ResponseGetCalification

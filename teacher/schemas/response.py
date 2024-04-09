@@ -14,7 +14,8 @@ class ResponseUser(ModelSchema):
             'name',
             'first_name',
             'second_name',
-            'email'
+            'email',
+            'thumbnail'
         ]
 
 
@@ -24,7 +25,7 @@ class ResponseToken(BaseModel):
 
 class ResponseMe(BaseModel):
     user: ResponseUser
-    course: List[ResponseGetCourse]
+    courses: List[ResponseGetCourse]
 
 
 class ResponseMessage(BaseModel):

@@ -4,10 +4,10 @@
 
 ---
 
-:heavy_check_mark: create the virtual environment for the api from anywhere `python -m venv (path_name)\(name_env)`
-Or from the current folder `python -m venv name_env`
-:heavy_check_mark: Activate the virtual environment to perform installations `.\(name_env)\Scripts\activate`
-:heavy_check_mark: Perform the installation of requirements.txt if it exists `pip install requirements.txt`
+:heavy_check_mark: create the virtual environment for the api from anywhere `python -m venv (path_name)\(name_env)`  
+Or from the current folder `python -m venv name_env`  
+:heavy_check_mark: Activate the virtual environment to perform installations `.\(name_env)\Scripts\activate`  
+:heavy_check_mark: Perform the installation of requirements.txt if it exists `pip install requirements.txt`  
 Otherwise, do the following
 
 ---
