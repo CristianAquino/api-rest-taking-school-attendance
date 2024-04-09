@@ -9,8 +9,7 @@ from .constants import Endpoints
 from .models import User
 from .schemas.payload import (PayloadPostAddUser, PayloadPostLoginUser,
                               PayloadUpdateMyAccount)
-from .schemas.response import (ResponseMe, ResponseMessage, ResponseToken,
-                               ResponseUser)
+from .schemas.response import ResponseMe, ResponseMessage, ResponseToken
 
 router = Router()
 
@@ -68,13 +67,13 @@ def get_my_account(request):
     """
     id = request.user.id
     courses = Course.objects.filter(teacher_id=id)
-    return {'user': request.user, 'course': courses}
+    return {'user': request.user, 'courses': courses}
 
 
 @router.put(
     Endpoints.PATCH_MY_ACCOUNT,
     auth=AuthBearer(),
-    response={201: ResponseUser},
+    response={201: ResponseMessage},
 )
 def put_my_account(request, data: PayloadUpdateMyAccount):
     """
@@ -88,6 +87,6 @@ def put_my_account(request, data: PayloadUpdateMyAccount):
             setattr(user, key, value)
 
         user.save()
-        return user
+        return dict(message="Updated teacher account")
     except:
         raise HttpError(403, "Cannot updated account")

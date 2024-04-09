@@ -1,6 +1,6 @@
-from typing_extensions import Annotated
 from ninja import Schema
-from pydantic import StringConstraints, Field
+from pydantic import Field, StringConstraints
+from typing_extensions import Annotated
 
 
 class PayloadPostAddCourse(Schema):
@@ -20,12 +20,15 @@ class PayloadPostAddCourse(Schema):
             pattern=r'^(primaria|secundaria)$'
         )
     ] = 'primaria'
-    degree: Annotated[int, Field(strict=True, gt=0, lt=7)] = 1
+    degree: Annotated[str, StringConstraints(
+        strip_whitespace=True,
+        pattern=r'^[1-6]$'
+    )] = '1'
     section: Annotated[
         str,
         StringConstraints(
             strip_whitespace=True,
-            pattern=r'^([A-U]|\d)$'
+            pattern=r'^([A-H]|U|\d)$'
         )
     ] = 'A'
 

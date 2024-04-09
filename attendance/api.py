@@ -22,6 +22,9 @@ router = Router()
     response=List[ResponseGetListAttendance]
 )
 def get_all_attendance_course(request, course_id):
+    """
+    Get all attendance of a course.
+    """
     students = Student.objects.filter(course_id=course_id)
     data = []
     for student in students:
